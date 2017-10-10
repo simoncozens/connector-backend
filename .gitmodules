@@ -1,0 +1,4 @@
+[submodule "angular-web"]
+	path = angular-web
+	url = https://github.com/simoncozens/connector-frontend.git
+	branch = master
