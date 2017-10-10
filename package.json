@@ -2,6 +2,17 @@
   "name": "angular-web",
   "private": true,
   "dependencies": {
-    "@angular/cli": "1.2.1"
+    "@angular/animations": "^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/compiler-cli": "^4.3.3",
+    "@angular/core": "^4.0.0",
+    "@angular/forms": "^4.0.0",
+    "@angular/http": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-browser-dynamic": "^4.0.0",
+    "@angular/platform-server": "^4.3.3",
+    "@angular/router": "^4.0.0",
+    "typescript": "~2.3.3"
   }
 }
