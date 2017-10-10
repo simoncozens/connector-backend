@@ -1,0 +1,7 @@
+{
+  "name": "angular-web",
+  "private": true,
+  "dependencies": {
+    "@angular/cli": "1.2.1"
+  }
+}
