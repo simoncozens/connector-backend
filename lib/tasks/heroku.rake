@@ -3,7 +3,7 @@ namespace :heroku do
     task :compile => :config do
         Dir.chdir("angular-web") do
             system("npm install")
-            system("ng build --aot")
+            system("ng build --aot --delete-output-path --output-path ../public")
         end
     end
 
