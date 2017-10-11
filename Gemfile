@@ -15,7 +15,7 @@ group :development do
   gem 'spring'
 end
 
-gem 'mongoid', '~> 4'
+gem 'mongoid', '~> 5'
 gem 'bson_ext'
 gem 'sorcery'
 gem 'rack-cors', :require => 'rack/cors'
