@@ -2,6 +2,7 @@ namespace :heroku do
     desc "Compile AOT frontend"
     task :compile => :config do
         Dir.chdir("angular-web") do
+            system("ngm install")
             system("ng build --aot")
         end
     end
