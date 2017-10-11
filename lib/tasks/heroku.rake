@@ -10,7 +10,7 @@ namespace :heroku do
     task :config do
         config = <<EOF
 export class AppSettings {
-   public static API_ENDPOINT = '#{ENV["HEROKU_URL"]}';
+   public static API_ENDPOINT = '#{ENV["HEROKU_URL"]}/api';
 }
 EOF
         File.open("angular-web/src/app/app.settings.ts", "w+") do |f|
