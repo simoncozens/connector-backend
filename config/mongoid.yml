@@ -1,16 +1,16 @@
 production:
-  sessions:
+  clients:
     default:
       uri: <%= ENV['MONGODB_URI'] %>
 
 development:
-  sessions:
+  clients:
     default:
       database: connector_development
       hosts:
         - localhost:27017
 test:
-  sessions:
+  clients:
     default:
       database: connector_test
       hosts:
