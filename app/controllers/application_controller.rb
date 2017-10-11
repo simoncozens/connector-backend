@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
       @current_user = Person.find_by(email: payload['user_email'])
       print(@current_user)
     rescue
-      render :json => { :error => "Not authorized" }, :status => 401
+      return nil
     end
   end
   
