@@ -1,6 +1,10 @@
+
+Mongoid::Fields.option :internal { }
+
 class Person
   include Mongoid::Document
   include Mongoid::Timestamps
+
 
   paginates_per 10
   authenticates_with_sorcery!
@@ -16,11 +20,23 @@ class Person
   field :gender
   field :picture
   field :country
+  field :memberships, type: Array
+  field :field_permissions, type: Hash, internal: true
+  field :crypted_password, type: String, internal: true
+  field :salt, type: String, internal: true
   has_many :follows, :dependent => :destroy
-  field :last_visited, type: Array # Do this as array of IDs for simplicity
+  field :last_visited, type: Array, internal: true # Do this as array of IDs for simplicity
+
+  def field_viewable?(field,other)
+    return false if field.options[:internal]
+    return true if other.roles.include?("admin")
+    # More here
+    return false if field_permissions.key?(field) and not field_permissions[field]
+    return true
+  end
 
   def self.searchable_fields
-    fields.map{|x|x[0]} - ["crypted_password","salt"]
+    fields.select{|k,v| !v.options[:internal]}
   end
 
   def follow!(user)
