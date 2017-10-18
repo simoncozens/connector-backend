@@ -1,5 +1,7 @@
 
-Mongoid::Fields.option :internal { }
+Mongoid::Fields.option(:internal) do
+  #nothing
+end
 
 class Person
   include Mongoid::Document
