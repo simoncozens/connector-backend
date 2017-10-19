@@ -5,7 +5,7 @@ class PersonSerializer < ActiveModel::Serializer
     end
     @attributes ||= self.object.fields.select{|k,v| object.field_viewable?(v,instance_options[:as_seen_by]) }.each_with_object({}) do |(key, attr), hash|
         if key == "_id"
-          hash[key] = object.id.to_s
+          hash["id"] = object.id.to_s
         else
           hash[key] = object.send(key)
         end
