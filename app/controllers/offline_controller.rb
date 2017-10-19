@@ -3,10 +3,10 @@ class OfflineController < ApplicationController
   before_action :authenticate!
 
   def people
-    if params[:since]
-      @people = Person.where(:updated_at.gte => params[:since])
-    else
+    if params[:since].blank?
       @people = Person.all
+    else
+      @people = Person.where(:updated_at.gte => params[:since])
     end
     # Hide the private stuff!
     stream_json_array(@people)

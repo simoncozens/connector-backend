@@ -4,7 +4,11 @@ class PersonSerializer < ActiveModel::Serializer
       raise "PersonSerializer instantiated without viewing user; use 'as_seen_by => current_user'"
     end
     @attributes ||= self.object.fields.select{|k,v| object.field_viewable?(v,instance_options[:as_seen_by]) }.each_with_object({}) do |(key, attr), hash|
-        hash[key] = object.send(key)
+        if key == "_id"
+          hash[key] = object.id.to_s
+        else
+          hash[key] = object.send(key)
+        end
       end
   end
 end
