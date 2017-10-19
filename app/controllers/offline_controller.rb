@@ -26,7 +26,7 @@ class OfflineController < ApplicationController
     i = 0
     enum.each do |object|
       buffer << ",\n  " unless i == 0
-      buffer << PersonSerializer.new(object).to_json
+      buffer << PersonSerializer.new(object, as_seen_by: current_user).to_json
 
       if i % FLUSH_EVERY == 0
         write(deflate, buffer)
