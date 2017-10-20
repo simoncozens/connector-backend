@@ -16,7 +16,7 @@ class OfflineController < ApplicationController
   FLUSH_EVERY = 50
 
   def user2json(u)
-    return PersonSerializer.new(u, as_seen_by: current_user).as_json
+    return PersonSerializer.new(u, as_seen_by: current_user).to_json
   end
 
   def stream_json_array(enum)
