@@ -14,12 +14,8 @@ class PeopleController < ApplicationController
   def show
     current_user.visit(@person)
     followed = current_user.following?(@person)
-    annotation = Annotation.where(about: @person,created_by: current_user).first
     p = PersonSerializer.new(@person, as_seen_by: current_user).as_json
-    render :json => p.merge({
-      "followed": followed,
-      "annotation": annotation
-    })
+    render :json => p
   end
 
   def annotate
@@ -83,7 +79,7 @@ class PeopleController < ApplicationController
       render :json => {
         :current_page => @people.current_page,
         :total_entries => @people.total_count,
-        :entries => block_given? ? @people.map{|x| yield(x)} : @people
+        :entries => @people.map{|p| PersonSerializer.new(p, as_seen_by: current_user).as_json }
       }
     end
 end
