@@ -15,6 +15,10 @@ class OfflineController < ApplicationController
   private
   FLUSH_EVERY = 50
 
+  def user2json(u)
+    return PersonSerializer.new(u, as_seen_by: current_user).as_json
+  end
+
   def stream_json_array(enum)
     response.headers["Content-Disposition"] = "attachment" # Download response to file. It's big.
     response.headers["Content-Type"]        = "application/json"
@@ -22,11 +26,11 @@ class OfflineController < ApplicationController
 
     deflate = Zlib::Deflate.new
 
-    buffer = "[ #{enum.count}, \n  "
+    buffer = "[ #{enum.count}"
     i = 0
     enum.each do |object|
-      buffer << ",\n  " unless i == 0
-      buffer << PersonSerializer.new(object, as_seen_by: current_user).to_json
+      buffer << ",\n  "
+      buffer << user2json(object)
 
       if i % FLUSH_EVERY == 0
         write(deflate, buffer)
