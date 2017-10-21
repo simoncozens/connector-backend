@@ -79,7 +79,9 @@ class PeopleController < ApplicationController
       render :json => {
         :current_page => @people.current_page,
         :total_entries => @people.total_count,
-        :entries => @people.map{|p| PersonSerializer.new(p, as_seen_by: current_user).as_json }
+        :entries => block_given? ?
+         @people.map{|p| PersonSerializer.new(yield(p), as_seen_by: current_user).as_json }
+         : @people.map{|p| PersonSerializer.new(p, as_seen_by: current_user).as_json }
       }
     end
 end
