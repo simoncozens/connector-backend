@@ -1,6 +1,6 @@
 class OfflineController < ApplicationController
   include ActionController::Live
-  before_action :authenticate!
+  # before_action :authenticate!
 
   def people
     if params[:since].blank?
@@ -10,6 +10,11 @@ class OfflineController < ApplicationController
     end
     # Hide the private stuff!
     stream_json_array(@people)
+  end
+
+  def update_visits
+    current_user.last_visited = params[:ids]
+    current_user.save!
   end
 
   private

@@ -25,5 +25,6 @@ Rails.application.routes.draw do
     match 'people', to: 'people#index', via: [:options]
     match '/login', to: "auth#login", via: [:post]
     get 'offline/people', to: "offline#people"
+    put 'offline/update_visits', to: "offline#update_visits"
   end
 end
