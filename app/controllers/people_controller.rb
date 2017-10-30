@@ -71,7 +71,8 @@ class PeopleController < ApplicationController
         :country,
         :affiliations => [[:organisation, :position, :website]],
         :experience => [],
-        :regions => []
+        :regions => [],
+        :field_permissions => [ :preferred_contact => [] ]
       )
     end
 
