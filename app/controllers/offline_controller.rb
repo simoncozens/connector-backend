@@ -1,6 +1,6 @@
 class OfflineController < ApplicationController
   include ActionController::Live
-  # before_action :authenticate!
+  before_action :authenticate!
 
   def people
     if params[:since].blank?
@@ -15,6 +15,7 @@ class OfflineController < ApplicationController
   def update_visits
     current_user.last_visited = params[:ids]
     current_user.save!
+    render :json => { :ok => 1 }
   end
 
   private

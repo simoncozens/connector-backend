@@ -1,5 +1,8 @@
 class PersonSerializer < ActiveModel::Serializer
   def attributes(requested_attrs = nil, reload = false)
+    if object.class != Person
+      return super
+    end
     if not instance_options[:as_seen_by]
       raise "PersonSerializer instantiated without viewing user; use 'as_seen_by => current_user'"
     end

@@ -4,9 +4,9 @@ class AuthController < ApplicationController
     user = Person.find_by(email: params[:email])
     if user = Person.authenticate(params[:email], params[:password])
       token = ::TokenProvider.issue_token(user_email: user.email)
-      render :json => user.as_json.merge({"token": token})
+      render :json => user.as_json.merge({"token": token}), scope:nil
     else
-      render :json => { :error => "Invalid credentials" }, :status => 401
+      render :json => { :error => "Invalid credentials" }, scope:nil, :status => 401
     end
   end
 end
