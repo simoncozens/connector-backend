@@ -15,7 +15,8 @@ class PersonSerializer < ActiveModel::Serializer
         end
       end
     @attributes["followed"] = viewer.following?(object)
-    @attributes["annotation"] = Annotation.where(about: object,created_by: viewer).first
+    ann = Annotation.where(about: object,created_by: viewer).first
+    @attributes["annotation"] = ann ? ann.content : ""
     return @attributes
   end
 end
