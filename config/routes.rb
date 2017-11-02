@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       collection do
         get 'following'
         get 'recent'
+        get 'recommended'
       end
     end
     resources :messages, :only => [:index, :show] do

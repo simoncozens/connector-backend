@@ -9,6 +9,12 @@ class PeopleController < ApplicationController
     render_people
   end
 
+  def recommended
+    page = params[:page] || 1
+    @people = current_user.similar.response.page(page).records
+    render_people
+  end
+
   # GET /people/1
   # GET /people/1.json
   def show
