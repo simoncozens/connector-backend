@@ -14,6 +14,8 @@
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/platform-server": "^4.3.3",
     "@angular/router": "^4.0.0",
-    "typescript": "~2.3.3"
+    "typescript": "~2.3.3",
+    "ionic-angular": "3.6.1",
+    "@ionic/app-scripts": "2.1.4"
   }
 }

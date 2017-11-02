@@ -3,7 +3,9 @@ namespace :heroku do
     task :compile => :config do
         Dir.chdir("angular-web") do
             system("npm install")
-            system("ng build --aot --delete-output-path --output-path ../public")
+            system("npm run ionic:build --prod")
+            system("rm -rf ../public")
+            system("mv www/* ../public")
         end
     end
 
