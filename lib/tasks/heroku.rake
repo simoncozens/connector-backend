@@ -5,7 +5,7 @@ namespace :heroku do
             system("npm install")
             system("npm run ionic:build --prod")
             system("rm -rf ../public")
-            system("mv www/* ../public")
+            system("mv www ../public")
         end
     end
 
