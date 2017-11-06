@@ -26,6 +26,7 @@ class Person
   field :memberships, type: Array
   field :field_permissions, type: Hash, internal: true
   field :crypted_password, type: String, internal: true
+  field :devices, type: Array, internal: true
   field :salt, type: String, internal: true
   has_many :follows, :dependent => :destroy
   field :last_visited, type: Array, internal: true # Do this as array of IDs for simplicity
@@ -72,6 +73,13 @@ class Person
       clause[:$text] = { :$search => params["fts"] }
     end
     self.where(clause)
+  end
+
+  def register_device(device)
+    d = devices || []
+    d.push(device)
+    devices = d
+    save!
   end
 
   # Elasticsearch stuff
