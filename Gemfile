@@ -31,3 +31,5 @@ gem 'rails_12factor', group: :production
 gem 'elasticsearch'
 gem 'elasticsearch-model'
 
+gem 'rpush', '~> 2.7.0'
+gem 'rpush-mongoid', '~> 0.2.0'

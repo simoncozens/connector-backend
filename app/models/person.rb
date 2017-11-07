@@ -82,6 +82,23 @@ class Person
     save!
   end
 
+  def notify(alert, data)
+    devices.each {|k,d|
+      puts d
+      if d["platform"] == "iOS"
+        self.notify_ios(d,alert,data)
+      end
+    }
+  end
+
+  def notify_ios(device, alert, data)
+    n = Rpush::Apns::Notification.new
+    n.app = Rpush::Apns::App.where(name: "ios_app").first
+    n.device_token = device["token"] # 64-character hex string
+    n.alert = alert
+    n.data = data
+    n.save!
+  end
   # Elasticsearch stuff
 
   # Define the index
