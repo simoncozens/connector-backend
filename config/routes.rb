@@ -10,6 +10,7 @@ Rails.application.routes.draw do
         get 'following'
         get 'recent'
         get 'recommended'
+        post 'add_device'
       end
     end
     resources :messages, :only => [:index, :show] do

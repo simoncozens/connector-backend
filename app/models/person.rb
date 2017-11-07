@@ -26,7 +26,7 @@ class Person
   field :memberships, type: Array
   field :field_permissions, type: Hash, internal: true
   field :crypted_password, type: String, internal: true
-  field :devices, type: Array, internal: true
+  field :devices, type: Hash, internal: true
   field :salt, type: String, internal: true
   has_many :follows, :dependent => :destroy
   field :last_visited, type: Array, internal: true # Do this as array of IDs for simplicity
@@ -76,9 +76,9 @@ class Person
   end
 
   def register_device(device)
-    d = devices || []
-    d.push(device)
-    devices = d
+    d = devices || {}
+    d[device["uuid"]] = device
+    self.devices = d
     save!
   end
 
