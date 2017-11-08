@@ -2,6 +2,7 @@ class Message
   include Mongoid::Document
   include Mongoid::Timestamps
   paginates_per 10
+  after_create :notify_recipient
 
   belongs_to :sender, class_name: 'Person'
   belongs_to :recipient, class_name: 'Person'
@@ -17,6 +18,10 @@ class Message
 
   scope :from_to, lambda {|u1, u2| where(sender: u1, recipient: u2) }
   scope :between, lambda {|u1, u2| any_of([from_to(u1,u2).selector, from_to(u2,u1).selector]) }
+
+  def notify_recipient
+    self.recipient.notify("New message from "+sender.name, {badge:Message.to_user(recipient).unread.count})
+  end
 
   def involves?(user)
     sender == user or recipient == user
