@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
+  resources :password_resets, :only => [:edit, :update]
+
   scope :api, defaults: {format: 'json'} do
+    get 'reset_password', to: "password_resets#create"
+
     resources :people, :only => [:index, :show] do
       member do
         get 'follow'

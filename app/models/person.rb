@@ -8,9 +8,15 @@ class Person
   include Mongoid::Timestamps
   include Elasticsearch::Model
 
+  def sf_client
+    @@client ||= Restforce.new(host: ENV["SALESFORCE_HOST"])
+  end
 
   paginates_per 10
   authenticates_with_sorcery!
+  validates :password, length: { minimum: 3 }, if: -> { new_record? || changes[:crypted_password] }
+  validates :password, confirmation: true, if: -> { new_record? || changes[:crypted_password] }
+  validates :password_confirmation, presence: true, if: -> { new_record? || changes[:crypted_password] }
 
   # Profile fields
   field :roles, type: Array
@@ -23,6 +29,7 @@ class Person
   field :gender
   field :picture
   field :country
+  field :citizenship
   field :memberships, type: Array
   field :field_permissions, type: Hash, internal: true
   field :crypted_password, type: String, internal: true
@@ -30,6 +37,7 @@ class Person
   field :salt, type: String, internal: true
   has_many :follows, :dependent => :destroy
   field :last_visited, type: Array, internal: true # Do this as array of IDs for simplicity
+  field :salesforce_id, internal: true
 
   def as_indexed_json(options={})
     as_json(only: Person.searchable_fields.keys-["_id"])
@@ -163,5 +171,13 @@ class Person
         }]
       } }
     return Person.elasticsearch_search(q)
+  end
+
+  def sf_person
+    sf_client.find("Contact", salesforce_id)
+  end
+
+  def to_salesforce
+    c = sf_person
   end
 end
