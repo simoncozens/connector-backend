@@ -33,3 +33,6 @@ gem 'elasticsearch-model'
 
 gem 'rpush', '~> 2.7.0'
 gem 'rpush-mongoid', '~> 0.2.0'
+
+gem 'restforce', '~> 2.5.3'
+gem 'sidekiq'

@@ -3,14 +3,15 @@ Mongoid::Fields.option(:internal) do
   #nothing
 end
 
+Mongoid::Fields.option(:salesforce) do
+  #nothing
+end
+
 class Person
   include Mongoid::Document
   include Mongoid::Timestamps
   include Elasticsearch::Model
-
-  def sf_client
-    @@client ||= Restforce.new(host: ENV["SALESFORCE_HOST"])
-  end
+  include SalesforceSerialization
 
   paginates_per 10
   authenticates_with_sorcery!
@@ -23,13 +24,13 @@ class Person
   field :name, type: String
   field :intro_bio, type: String
   field :preferred_contact, type: String
-  field :affiliations, type: Array
+  field :affiliations, type: Array, salesforce: @@sf_serialize_affiliations
   field :experience, type: Array
   field :regions, type: Array
-  field :gender
+  field :gender, salesforce: "Gender__c"
   field :picture
-  field :country
-  field :citizenship
+  field :country, salesforce: "Country_of_Residence__c"
+  field :citizenship, salesforce: "Country_of_Citizenship__c"
   field :memberships, type: Array
   field :field_permissions, type: Hash, internal: true
   field :crypted_password, type: String, internal: true
@@ -38,6 +39,7 @@ class Person
   has_many :follows, :dependent => :destroy
   field :last_visited, type: Array, internal: true # Do this as array of IDs for simplicity
   field :salesforce_id, internal: true
+
 
   def as_indexed_json(options={})
     as_json(only: Person.searchable_fields.keys-["_id"])
@@ -173,11 +175,4 @@ class Person
     return Person.elasticsearch_search(q)
   end
 
-  def sf_person
-    sf_client.find("Contact", salesforce_id)
-  end
-
-  def to_salesforce
-    c = sf_person
-  end
 end
