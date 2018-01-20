@@ -31,6 +31,7 @@ class Person
   field :regions, type: Array
   field :gender, salesforce: "Gender__c"
   field :picture
+  field :intro_video
   field :country, salesforce: "Country_of_Residence__c"
   field :citizenship, salesforce: "Country_of_Citizenship__c"
   field :memberships, type: Array
