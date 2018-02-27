@@ -36,3 +36,4 @@ gem 'rpush-mongoid', '~> 0.2.0'
 
 gem 'restforce', '~> 2.5.3'
 gem 'sidekiq'
+gem 'faye'

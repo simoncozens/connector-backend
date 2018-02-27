@@ -59,6 +59,13 @@ module SalesforceSerialization
     end
   end
 
+  def sync_from_salesforce
+    from_salesforce(sf_person)
+    Person.skip_callback(:save, :before, :to_salesforce)
+    save
+    Person.set_callback(:save, :before, :to_salesforce)
+  end
+
   included do
     before_save :to_salesforce
   end
@@ -67,12 +74,25 @@ module SalesforceSerialization
     def new_from_salesforce(id)
       p = Person.new
       p.salesforce_id = id
-      p.from_salesforce(p.sf_person)
       p.password = p.password_confirmation = SecureRandom.uuid # XXX?
-      Person.skip_callback(:save, :before, :to_salesforce)
-      p.save
-      Person.set_callback(:save, :before, :to_salesforce)
+      p.sync_from_salesforce
       return p
+    end
+
+    def update_from_salesforce(sfid)
+      c = Person.where(salesforce_id: sfid)
+      if c.count == 0
+        return new_from_salesforce(sfid)
+      end
+      p = c.first
+      p.sync_from_salesforce
+    end
+
+    def salesforce_watcher
+      SalesforceClient.watch do |m|
+        Rails.logger.info("Salesforce object #{m["Id"]} updated, syncing")
+        Person.update_from_salesforce(m["Id"])
+      end
     end
   end
 end
