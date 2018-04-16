@@ -24,14 +24,25 @@ class Person
   field :roles, type: Array
   field :email, type: String, salesforce: "Email"
   field :name, type: String, salesforce: "Name"
+  field :skype_id, type: String, salesforce: "Skype_ID__c"
+  field :linkedin_id, type: String, salesforce: "Linked_In__c"
+  field :twitter_id, type: String, salesforce: "Twitter__c"
+  field :facebook_id, type: String, salesforce: "Facebook__c"
   field :intro_bio, type: String
   field :preferred_contact, type: String
+  field :languages_spoken, type: String, salesforce: "Language_Ability__c"
+  field :primary_language, type: String, salesforce: "Primary_Lanaguage_of_Preference__c"
   field :affiliations, type: Array, salesforce: @@sf_serialize_affiliations
+  field :phone, salesforce: @@sf_serialize_phone
+  field :catalyst, salesforce: @@sf_serialize_catalyst
+  field :events,type: Array, salesforce: @@sf_serialize_events
   field :experience, type: Array
-  field :regions, type: Array
+  field :regions, type: Array, salesforce: @@sf_serialize_regions
   field :gender, salesforce: "Gender__c"
   field :picture
   field :intro_video
+  field :city, salesforce: "MailingCity"
+  field :birthdate, salesforce: "Birthdate"
   field :country, salesforce: "Country_of_Residence__c"
   field :citizenship, salesforce: "Country_of_Citizenship__c"
   field :memberships, type: Array
@@ -50,9 +61,9 @@ class Person
 
   def field_viewable?(field,other)
     return false if field.options[:internal]
-    return true if other.roles.include?("admin")
+    # return true if other.roles and other.roles.include?("admin")
     # More here
-    return false if field_permissions.key?(field) and not field_permissions[field]
+    # return false if field_permissions.key?(field) and not field_permissions[field]
     return true
   end
 
