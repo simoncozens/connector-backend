@@ -83,27 +83,39 @@ module SalesforceSerialization
 
   def to_salesforce
     return if not changed?
+    return if not salesforce_id # For whatever reason?
 
-    sf_updates = {}
+    sf_updates = { "Id": salesforce_id }
+
     changed.each do |change|
+      # For each field that's changed, we see if there is a
+      # :salesforce option on that field definition (in person.rb)
       sf_opt = Person.fields[change].options[:salesforce]
+
+      new_value = send(change) # This calls e.g. person.skype_id
+
+      # If there's a one-to-one mapping to a SF field, job done.
       if sf_opt.is_a?(String)
-        sf_updates[sf_opt] = send(change)
+        sf_updates[sf_opt] = new_value
+      # Otherwise some code will be needed to get the value into
+      # one or more SF fields. Call that code.
       elsif sf_opt.is_a?(Hash)
-        sf_opt[:to_salesforce].call(send(change), sf_updates)
+        sf_opt[:to_salesforce].call(new_value, sf_updates)
       end
     end
 
-    return if not salesforce_id
-    sf_updates["Id"] = salesforce_id
     UpdateSalesforceJob.perform_later(sf_updates)
   end
 
   def from_salesforce(sf_user)
+    # For all of the fields which have some kind of marshalling defined:
     Person.fields.select {|k,f| f.options[:salesforce]}.each do |k,v|
       sf_opt = v.options[:salesforce]
+      # If it's just a plain field, look up that field name in the hash
+      # and store it in the object
       if sf_opt.is_a?(String)
         write_attribute(k, sf_user[sf_opt])
+      # Otherwise find marshalling code and call it.
       elsif sf_opt.is_a?(Hash)
         sf_opt[:from_salesforce].call(sf_user, self)
       end
@@ -112,6 +124,8 @@ module SalesforceSerialization
 
   def sync_from_salesforce
     from_salesforce(sf_person)
+    # Normally when we save, we marshal back to SF. This is silly
+    # if we've just received data *from* SF, so turn off that trigger.
     Person.skip_callback(:save, :before, :to_salesforce)
     save
     Person.set_callback(:save, :before, :to_salesforce)
