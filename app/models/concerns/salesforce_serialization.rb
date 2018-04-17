@@ -18,9 +18,11 @@ module SalesforceSerialization
     },
     from_salesforce: -> sf_person, mongo_person {
       mongo_person.affiliations = [
-        {organisation: sf_person["Temp_Organization__c"], website: sf_person["Organization_Website__c"], position: sf_person["Title"]},
-        {organisation: sf_person["Org_2_Temp__c"], website: sf_person["Org_2_Website__c"], position: sf_person["Org_2_Title__c"]}
+        {organisation: sf_person["Temp_Organization__c"], website: sf_person["Organization_Website__c"], position: sf_person["Title"]}
       ]
+      if sf_person["Org_2_Temp__c"]
+        mongo_person.affiliations.push({organisation: sf_person["Org_2_Temp__c"], website: sf_person["Org_2_Website__c"], position: sf_person["Org_2_Title__c"]})
+      end
     }
   }
 
@@ -38,15 +40,16 @@ module SalesforceSerialization
     }
   }
 
-@@sf_serialize_catalyst = {
-  to_salesforce: -> x,y { },
-  from_salesforce: -> sf_person, mongo_person {
-    if !sf_person["Lausanne_Leadership__c"].blank? and sf_person["Lausanne_Leadership__c"].include?("Catalyst") and m = sf_person["Lausanne_Leadership_Title__c"].match(/Catalyst for (.*)/)
-        mongo_person.catalyst = m[1]
-        mongo_person.experience = [m[1]]
-      end
+  @@sf_serialize_catalyst = {
+    to_salesforce: -> x,y { },
+    from_salesforce: -> sf_person, mongo_person {
+      if !sf_person["Lausanne_Leadership__c"].blank? and sf_person["Lausanne_Leadership__c"].include?("Catalyst") and !sf_person["Lausanne_Leadership_Title__c"].blank? and m = sf_person["Lausanne_Leadership_Title__c"].match(/Catalyst for (.*)/)
+          mongo_person.catalyst = m[1]
+          mongo_person.experience = [m[1]]
+        end
+    }
   }
-}
+
 
   @@sf_serialize_events = {
     to_salesforce: -> x,y { },
@@ -54,6 +57,10 @@ module SalesforceSerialization
       events = (sf_person["Event_Participation__c"]||[]).split(/;/)
       other_events = sf_person.attrs.select{|k,v| k.match(/^X/) && v}.keys.map{|x| x.gsub(/__c/,"").gsub(/_/, " ").gsub(/^X/,"") }
       mongo_person.events = events.append(other_events).flatten.uniq
+      created = Date.parse(sf_person["CreatedDate"]).year.to_s
+      event_years = mongo_person.events.map{|x| (m=x.match(/(\d\d\d\d)/)) && m[1] }
+      event_years.unshift(created)
+      mongo_person.joined_lausanne = event_years.sort.first
     }
   }
 
