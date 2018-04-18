@@ -52,7 +52,7 @@ module ElasticsearchSearchability
       end
     end
 
-    def similar
+    def similar(params)
       q = { more_like_this: {
         min_doc_freq: 1,
         min_term_freq: 1,
@@ -63,6 +63,12 @@ module ElasticsearchSearchability
           _id: id.to_s
           }]
         } }
+      if params[:fts]
+        q = { bool: {
+          should: q,
+          must: { query_string: { query: params[:fts] } }
+        } }
+      end
       return Person.elasticsearch_search(q)
     end
 end

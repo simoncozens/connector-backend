@@ -11,7 +11,7 @@ class PeopleController < ApplicationController
 
   def recommended
     page = params[:page] || 1
-    @people = current_user.similar.response.page(page).records
+    @people = current_user.similar(params).response.page(page).records
     render_people
   end
 
@@ -44,8 +44,17 @@ class PeopleController < ApplicationController
   end
 
   def following
-    @people = current_user.follows.page(params[:page]||1)
-    render_people &:followed_user
+    if params["fts"]
+      # mongoid does not directly support where clauses on has_many
+      # relationships, so we have to fake it
+      followed_ids = current_user.follows.map(&:followed_user_id)
+      @people =  Person.where(:$text => { :$search => params["fts"] }, :id.in => followed_ids)
+      @people = @people.page(params[:page]||1)
+      render_people
+    else
+      @people = current_user.follows.page(params[:page]||1)
+      render_people &:followed_user
+    end
   end
 
   def recent
