@@ -30,6 +30,7 @@ class Person
   field :facebook_id, type: String, salesforce: "Facebook__c"
   field :lausanne_title, type: String, salesforce: "Lausanne_Leadership_Title__c"
   field :intro_bio, type: String
+  field :short_bio, type: String
   field :joined_lausanne, type: String
   field :preferred_contact, type: String
   field :languages_spoken, type: String, salesforce: "Language_Ability__c"
