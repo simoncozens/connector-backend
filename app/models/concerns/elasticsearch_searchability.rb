@@ -53,9 +53,9 @@ module ElasticsearchSearchability
     end
 
     def similar(params)
-      q = { more_like_this: {
-        min_doc_freq: 1,
-        min_term_freq: 1,
+      mlt = { more_like_this: {
+        min_doc_freq: 0,
+        min_term_freq: 0,
         fields: ["experience", "regions", "country", "memberships"],
         like: [ {
           _index: __elasticsearch__.index_name,
@@ -63,11 +63,9 @@ module ElasticsearchSearchability
           _id: id.to_s
           }]
         } }
+      q = { bool: { should: mlt , must: { match_all: {} } } }
       if params[:fts]
-        q = { bool: {
-          should: q,
-          must: { query_string: { query: params[:fts] } }
-        } }
+        q[:bool][:must] = { query_string: { query: params[:fts] } }
       end
       return Person.elasticsearch_search(q)
     end
