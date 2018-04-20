@@ -6,7 +6,7 @@ class PasswordResetsController < ApplicationController
   # you get here when the user entered his email in the reset password form and submitted it.
   def create
     @user = Person.where(email: params[:email]).first
-    #@user.deliver_reset_password_instructions! if @user
+    @user.deliver_reset_password_instructions! if @user
     render :json => { ok:1, notice: 'Instructions have been sent to your email.'}, status: 200, scope:nil
   end
 
