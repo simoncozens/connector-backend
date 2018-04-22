@@ -90,10 +90,12 @@ class PeopleController < ApplicationController
     # What can a user edit about themselves?
     def person_params_user
       params.fetch(:person, {}).permit(
-        :intro_bio,
-        :preferred_contact,
+        :intro_bio, :short_bio,
+        :skype_id, :linkedin_id, :twitter_id, :facebook_id,
         :picture,
-        :country,
+        :country, :city,
+        :phone, :languages_spoken, :primary_language,
+        :birthdate, 
         :affiliations => [[:organisation, :position, :website]],
         :experience => [],
         :regions => [],
