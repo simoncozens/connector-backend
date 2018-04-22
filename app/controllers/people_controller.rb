@@ -1,5 +1,5 @@
 class PeopleController < ApplicationController
-  before_action :set_person, only: [:show, :edit, :destroy, :follow, :unfollow, :annotate]
+  before_action :set_person, only: [:show, :edit, :destroy, :follow, :unfollow, :annotate, :add_to_network]
   before_action :authenticate!
   # GET /people
   # GET /people.json
@@ -78,6 +78,18 @@ class PeopleController < ApplicationController
       render :json => { :ok => 1 }
     else
       render :nothing => true, :status => 400
+    end
+  end
+
+  # Catalysts can add to network
+  def add_to_network
+    if !current_user.catalyst
+      render :nothing => true, :status => 400
+    else
+      @person.experience ||= []
+      @person.experience |= [current_user.catalyst] # Add without dupe
+      @person.save
+      render :json => { :ok => 1 }
     end
   end
 
