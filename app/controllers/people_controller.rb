@@ -73,7 +73,7 @@ class PeopleController < ApplicationController
 
   def add_device
     device = params[:device]
-    if device.key?("uuid")
+    if device and device.key?("uuid")
       current_user.register_device(device)
       render :json => { :ok => 1 }
     else
