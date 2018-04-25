@@ -63,8 +63,11 @@ class PeopleController < ApplicationController
   end
 
   def update
-    puts person_params_user
-    if current_user.update(person_params_user)
+    to_update = person_params_user
+    if to_update[:picture]
+      to_update[:picture] = square_crop(to_update[:picture])
+    end
+    if current_user.update(to_update)
       render :json => { :ok => 1 }
     else
       render json: @person.errors, status: :unprocessable_entity
@@ -123,5 +126,11 @@ class PeopleController < ApplicationController
          @people.map{|p| PersonSerializer.new(yield(p), as_seen_by: current_user).as_json }
          : @people.map{|p| PersonSerializer.new(p, as_seen_by: current_user).as_json }
       }
+    end
+
+    def square_crop(picture)
+      image = Magick::Image.read_inline(picture).first
+      image = image.resize_to_fill(200,200)
+      return "data:image/jpeg;base64,"+Base64.encode64(image.to_blob).gsub(/\n/, "")
     end
 end
