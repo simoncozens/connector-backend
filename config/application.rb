@@ -24,5 +24,8 @@ module Connector
       end
     end
     config.active_job.queue_adapter = :sidekiq
+    config.autoload_paths << Rails.root.join('lib')
   end
 end
+
+

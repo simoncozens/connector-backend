@@ -238,7 +238,7 @@ Rails.application.config.sorcery.configure do |config|
     # use an external encryption class.
     # Default: `nil`
     #
-    # user.custom_encryption_provider =
+    user.custom_encryption_provider = GrandfatheredCryptoProvider
 
     # encryption algorithm name. See 'encryption_algorithm=' for available options.
     # Default: `:bcrypt`

@@ -38,3 +38,4 @@ gem 'restforce', '~> 2.5.3'
 gem 'sidekiq'
 gem 'faye'
 gem "rmagick", "2.16.0", :require => 'RMagick'
+gem "phpass-ruby"

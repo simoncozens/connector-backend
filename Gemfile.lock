@@ -142,6 +142,7 @@ GEM
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
     origin (2.3.1)
+    phpass-ruby (0.1.2)
     public_suffix (3.0.2)
     puma (3.11.4)
     rack (1.6.9)
@@ -265,6 +266,7 @@ DEPENDENCIES
   jwt
   kaminari-mongoid
   mongoid (~> 5)
+  phpass-ruby
   puma
   rack-cors
   rails (= 4.2.9)

@@ -26,8 +26,8 @@ field_map = {:citizenship => "Country of Citizenship",
 CSV.foreach("LausanneConnector1LeaderInfo.csv", :headers => true) do |row|
   puts row["display_name"]
   p = Person.where(email: row["user_email"]).first_or_create
-  # p.crypted_password=
-  # p.name = row["display_name"] # Needs un-HTML-Escaping
+  p.crypted_password ||= row["user_pass"]
+  p.name ||= Nokogiri::HTML.parse(row["display_name"]).text
   if row["avatar"]
     begin
       p.picture = save_picture(row["avatar"])
@@ -37,7 +37,7 @@ CSV.foreach("LausanneConnector1LeaderInfo.csv", :headers => true) do |row|
   end
   field_map.each do |m,c|
       if !row[c].blank? && (p.send(m)).blank?
-        p.write_attribute(m,row[c])
+        p.write_attribute(m, Nokogiri::HTML.parse(row[c]).text)
       end
   end
   p.save
