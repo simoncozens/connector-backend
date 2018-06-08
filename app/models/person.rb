@@ -57,6 +57,9 @@ class Person
   field :last_visited, type: Array, internal: true # Do this as array of IDs for simplicity
   field :salesforce_id, internal: true
 
+  def is_admin?
+    roles.include?("admin")
+  end
 
   def as_indexed_json(options={})
     as_json(only: Person.searchable_fields.keys-["_id"])
@@ -64,7 +67,7 @@ class Person
 
   def field_viewable?(field,other)
     return false if field.options[:internal]
-    # return true if other.roles and other.roles.include?("admin")
+    # return true if other.roles and other.is_admin?
     # More here
     # return false if field_permissions.key?(field) and not field_permissions[field]
     return true

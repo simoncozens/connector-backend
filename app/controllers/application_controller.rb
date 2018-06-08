@@ -38,6 +38,13 @@ class ApplicationController < ActionController::Base
     @current_user = Person.find_by(email: payload['user_email'])
   end
 
+  def authenticate_as_admin!
+    if !current_user.is_admin?
+      render :json => { :error => "Not authorized" }.to_json, scope: nil, :status => 401
+      return false
+    end
+  end
+
   def current_user
     @current_user ||= authenticate!
   end
