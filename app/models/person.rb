@@ -58,7 +58,7 @@ class Person
   field :salesforce_id, internal: true
 
   def is_admin?
-    roles.include?("admin")
+    roles.to_a.include?("admin")
   end
 
   def as_indexed_json(options={})
