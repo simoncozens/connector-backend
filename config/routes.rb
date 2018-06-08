@@ -16,6 +16,7 @@ Rails.application.routes.draw do
         get 'recent'
         get 'recommended'
         post 'add_device'
+        post 'new'
       end
     end
     resources :messages, :only => [:index, :show] do

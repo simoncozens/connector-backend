@@ -1,6 +1,7 @@
 class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :edit, :destroy, :follow, :unfollow, :annotate, :add_to_network]
   before_action :authenticate!
+  before_action :authenticate_as_admin!, only: [ :new ]
   # GET /people
   # GET /people.json
   def index
@@ -67,11 +68,26 @@ class PeopleController < ApplicationController
     if to_update[:picture]
       to_update[:picture] = square_crop(to_update[:picture])
     end
-    if current_user.update(to_update)
+
+    target = current_user
+    if current_user.is_admin? and params[:id]
+      # You, and only you, can update somebody else.
+      target = Person.find(params[:id])
+    end
+
+    if target.update(to_update)
       render :json => { :ok => 1 }
     else
-      render json: @person.errors, status: :unprocessable_entity
+      render json: target.errors, status: :unprocessable_entity
     end
+  end
+
+  def new
+    @person = Person.new(params.require(:user).permit!)
+    if @person.save
+      return show
+    end
+    render json: { :ok => 0, :errors => @person.errors }, status: :unprocessable_entity
   end
 
   def add_device
