@@ -4,6 +4,7 @@ module ElasticsearchSearchability
     included do
       # Define the index
       include Elasticsearch::Model
+      include Elasticsearch::Model::Callbacks
       settings do
         mappings dynamic: 'false' do
           indexes :id, index: 'not_analyzed'
