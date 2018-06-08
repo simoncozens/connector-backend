@@ -83,7 +83,7 @@ class PeopleController < ApplicationController
   end
 
   def new
-    @person = Person.new(params.require(:user).permit!)
+    @person = Person.new(params.require(:person).permit!)
     if @person.save
       return show
     end
