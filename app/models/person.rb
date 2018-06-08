@@ -21,7 +21,7 @@ class Person
   validates :password_confirmation, presence: true, if: -> { new_record? || changes[:crypted_password] }
 
   # Profile fields
-  field :roles, type: Array
+  field :roles, type: Array, default: ->{ [] }
   field :email, type: String, salesforce: "Email"
   field :name, type: String, salesforce: "Name"
   field :skype_id, type: String, salesforce: "Skype_ID__c"
@@ -38,9 +38,9 @@ class Person
   field :affiliations, type: Array, salesforce: @@sf_serialize_affiliations
   field :phone, salesforce: @@sf_serialize_phone
   field :catalyst, salesforce: @@sf_serialize_catalyst
-  field :events,type: Array, salesforce: @@sf_serialize_events
-  field :experience, type: Array
-  field :regions, type: Array, salesforce: @@sf_serialize_regions
+  field :events,type: Array, salesforce: @@sf_serialize_events, default: -> {[]}
+  field :experience, type: Array, default: -> {[]}
+  field :regions, type: Array, salesforce: @@sf_serialize_regions, default: -> {[]}
   field :gender, salesforce: "Gender__c"
   field :picture
   field :intro_video
@@ -48,14 +48,17 @@ class Person
   field :birthdate, salesforce: "Birthdate"
   field :country, salesforce: "Country_of_Residence__c"
   field :citizenship, salesforce: "Country_of_Citizenship__c"
-  field :memberships, type: Array
-  field :field_permissions, type: Hash, internal: true
+  field :memberships, type: Array, default: -> {[]}
+  field :field_permissions, type: Hash, internal: true, default: -> { {} }
   field :crypted_password, type: String, internal: true
-  field :devices, type: Hash, internal: true
+  field :devices, type: Hash, internal: true, default: -> { {} }
   field :salt, type: String, internal: true
   has_many :follows, :dependent => :destroy
-  field :last_visited, type: Array, internal: true # Do this as array of IDs for simplicity
+  field :last_visited, type: Array, internal: true, default: -> { [] } # Do this as array of IDs for simplicity
   field :salesforce_id, internal: true
+
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true
 
   def is_admin?
     roles.to_a.include?("admin")
